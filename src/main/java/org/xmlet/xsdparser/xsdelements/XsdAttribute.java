@@ -85,7 +85,7 @@ public class XsdAttribute extends XsdNamedElements {
         this.form = AttributeValidations.belongsToEnum(FormEnum.QUALIFIED, attributesMap.getOrDefault(FORM_TAG, formDefaultValue));
         this.use = AttributeValidations.belongsToEnum(UsageEnum.OPTIONAL, attributesMap.getOrDefault(USE_TAG, UsageEnum.OPTIONAL.getValue()));
 
-        if (type != null && !XsdParser.getXsdTypesToJava().containsKey(type)){
+        if (type != null && !XsdParser.getXsdTypesToJava().containsKey(type)) {
             this.simpleType = new UnsolvedReference(type, new XsdAttribute(this, parser, new HashMap<>()));
             parser.addUnsolvedReference((UnsolvedReference) this.simpleType);
         }
@@ -99,11 +99,11 @@ public class XsdAttribute extends XsdNamedElements {
     private static String getFormDefaultValue(XsdAbstractElement parent) {
         if (parent == null) return null;
 
-        if (parent instanceof XsdElement){
+        if (parent instanceof XsdElement) {
             return ((XsdElement) parent).getForm();
         }
 
-        if (parent instanceof XsdSchema){
+        if (parent instanceof XsdSchema) {
             return ((XsdSchema) parent).getAttributeFormDefault();
         }
 
@@ -126,7 +126,7 @@ public class XsdAttribute extends XsdNamedElements {
      * Throws an exception in that case.
      */
     private void rule3() {
-        if (attributesMap.containsKey(REF_TAG) && (simpleType != null || form != null || type != null)){
+        if (attributesMap.containsKey(REF_TAG) && (simpleType != null || form != null || type != null)) {
             throw new ParsingException(XSD_TAG + " element: If " + REF_TAG + " attribute is present, simpleType element, form attribute and type attribute cannot be present at the same time.");
         }
     }
@@ -136,7 +136,7 @@ public class XsdAttribute extends XsdNamedElements {
      * an exception in that case.
      */
     private void rule2() {
-        if (fixed != null && defaultElement != null){
+        if (fixed != null && defaultElement != null) {
             throw new ParsingException(XSD_TAG + " element: " + FIXED_TAG + " and " + DEFAULT_ELEMENT_TAG + " attributes are not allowed at the same time.");
         }
     }
@@ -155,6 +155,7 @@ public class XsdAttribute extends XsdNamedElements {
     /**
      * Performs a copy of the current object for replacing purposes. The cloned objects are used to replace
      * {@link UnsolvedReference} objects in the reference solving process.
+     *
      * @param placeHolderAttributes The additional attributes to add to the clone.
      * @return A copy of the object from which is called upon.
      */
@@ -174,11 +175,12 @@ public class XsdAttribute extends XsdNamedElements {
 
     /**
      * Receives a {@link NamedConcreteElement} that should be the one requested earlier.
-     *  * In the {@link XsdAttribute} constructor:
-     *      this.simpleType = new UnsolvedReference(type, placeHolder);
-     *      XsdParser.getInstance().addUnsolvedReference((UnsolvedReference) this.simpleType);
+     * * In the {@link XsdAttribute} constructor:
+     * this.simpleType = new UnsolvedReference(type, placeHolder);
+     * XsdParser.getInstance().addUnsolvedReference((UnsolvedReference) this.simpleType);
      * This implies that the object being received is the object that is being referred with the {@link XsdAttribute#type}
      * String.
+     *
      * @param elementWrapper The object that should be wrapping the requested {@link XsdSimpleType} object.
      */
     @Override
@@ -187,7 +189,7 @@ public class XsdAttribute extends XsdNamedElements {
 
         XsdAbstractElement element = elementWrapper.getElement();
 
-        if (element instanceof XsdSimpleType && simpleType != null && compareReference(elementWrapper, type)){
+        if (element instanceof XsdSimpleType && simpleType != null && compareReference(elementWrapper, type)) {
             this.simpleType = elementWrapper;
         }
     }
@@ -196,7 +198,7 @@ public class XsdAttribute extends XsdNamedElements {
         this.simpleType = simpleType;
     }
 
-    public XsdSimpleType getXsdSimpleType(){
+    public XsdSimpleType getXsdSimpleType() {
         return simpleType instanceof ConcreteElement ? (XsdSimpleType) simpleType.getElement() : null;
     }
 
@@ -217,10 +219,15 @@ public class XsdAttribute extends XsdNamedElements {
     }
 
     @SuppressWarnings("unused")
-    public List<XsdRestriction> getAllRestrictions(){
+    public String getDefaultElement() {
+        return defaultElement;
+    }
+
+    @SuppressWarnings("unused")
+    public List<XsdRestriction> getAllRestrictions() {
         XsdSimpleType simpleTypeObj = getXsdSimpleType();
 
-        if (simpleTypeObj != null){
+        if (simpleTypeObj != null) {
             return simpleTypeObj.getAllRestrictions();
         }
 
